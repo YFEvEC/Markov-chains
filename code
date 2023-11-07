@@ -1,0 +1,45 @@
+def is_prime_or_twice_prime(n):
+return is_prime(n) or (n % 2 == 0 and is_prime(n // 2))
+1
+# Modify the value of M to the desired goal score
+M = 11
+# Create the transition matrix for the game
+A = zero_matrix(QQ, M + 1)
+# Fill the first row of the matrix with the probabilities of the first roll
+for i in range(6):
+A[0, i + 1] = 1 / 6
+# Set the absorbing state for the goal score
+A[M, M] = 1
+# Fill the rest of the matrix based on the game rules
+for i in range(1, M):
+for j in range(6):
+roll = j + 1
+score = i + roll
+# Check if the sum is M or greater
+#if it’s a prime or twice a prime number
+if score >= M:
+A[i, M] += 1 / 6
+elif is_prime_or_twice_prime(score):
+A[i, score // 2] += 1 / 6
+else:
+A[i, score] += 1 / 6
+# Print the transition matrix
+latex(A)
+
+# work out the expected number of rolls until absorption
+#get the matrix Q by removing the last row and last column
+Q = A[:11,:11]
+N=(matrix.identity(11)-Q).inverse()
+sum(N[0][i] for i in range(10)) # get an exact value here
+sum(N[0][i] for i in range(10))*1. #report a decimal equivalent to the exact value
+
+previous = 0 # set the P^(i-1) as zero
+a = []
+current = 0 # set the P^(i) as zero
+# Change the loop range to start from 1
+for i in range(1, 50):
+Pplot = A^i
+current = Pplot[0, M] # extract the probability
+a.append(current - previous)
+previous = current
+list_plot(a)
