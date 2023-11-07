@@ -1,0 +1,227 @@
+\documentclass[12pt]{article}
+ 
+\usepackage[margin=0.75in]{geometry} 
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{physics}
+\usepackage{mathdots}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{tikz}
+\usepackage[T1]{fontenc}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage{MnSymbol,wasysym}
+\usepackage{hyperref}
+\usepackage{filecontents}
+\def\firstcircle{(90:4cm) circle (4.5cm)}
+\def\secondcircle{(200:3cm) circle (4.5cm)}
+\def\thirdcircle{(340:3cm) circle (4.5cm)}
+
+\newcommand{\N}{\mathbb{N}}
+% Bold for vectors and matrices
+\newcommand\vect[1]{\mathbf{#1}}
+\newcommand{\Z}{\mathbb{Z}}
+\renewcommand{\theenumi}{\alph{enumi}}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+ 
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][\large Exercise]{\begin{trivlist}
+\item[\centering \Large \hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{reflection}[2][Reflection]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{proposition}[2][Proposition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+ 
+\makeatletter
+\def\@seccntformat#1{%
+  \expandafter\ifx\csname c@#1\endcsname\c@section\else
+  \csname the#1\endcsname\quad
+  \fi}
+\makeatother
+
+\setcounter{MaxMatrixCols}{20} 
+
+
+
+\usepackage{xcolor}
+\colorlet{kw}{blue}
+\definecolor{com}{rgb}{0,0.6,0.3}
+
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+
+% redefine keywords
+\algrenewcommand\algorithmicfunction{\textcolor{kw}{function}}
+\algrenewcommand\algorithmicwhile{\textcolor{kw}{while}}
+\algrenewcommand\algorithmicfor{\textcolor{kw}{for}}
+\algrenewcommand\algorithmicif{\textcolor{kw}{if}}
+\algrenewcommand\algorithmicelse{\textcolor{kw}{else}}
+\algrenewcommand\algorithmicend{\textcolor{kw}{end}}
+
+% new keywords
+\algnewcommand\Break{\textcolor{kw}{break}}%
+\algnewcommand\Continue{\textcolor{kw}{continue}}%
+
+% redefine loops
+\algdef{SE}[WHILE]{While}{EndWhile}[1]{\algorithmicwhile\ #1}{\algorithmicend}%
+\algdef{SE}[FOR]{For}{EndFor}[1]{\algorithmicfor\ #1}{\algorithmicend}%
+\algdef{SE}[IF]{IF}{EndFor}[1]{\algorithmicif\ #1 }{\algorithmicend}%
+
+% redefine comments
+\algrenewcommand{\algorithmiccomment}[1]{{\color{com}\%#1}}
+
+
+\begin{document}
+
+ 
+\title{\textbf{Markov chains.}}%replace X with the appropriate number
+\author{Eve Chen} %if necessary, replace with your course title
+\date{\normalsize 5th May}
+\maketitle
+\noindent \underline{\textbf{Markov chains}} \\\\
+To investigate a game related to Markov chains, I start with a score of 0. Then I will start to roll a six-sided fair die each turn. By getting a random number from 1 to 6, I will make the sum of the current score and the new roll as the new score. If the sum is a prime number or twice a prime number, I will divide the sum by 2 (rounded down) to get the new score. The game will stop as the new score become greater or equal to goal score.\\\\
+Then I introduce a variable as M, representing the goal score. Here I take the goal score as $M = 11$, thus the game will stop once $M \geq 11$.\\\\
+To model certain random processes that change discretely among a set of states, I introduce the Markov chain. Under this circumstance, we only have 12 scores(from 0 to 11) which could be reached before we reach a score greater than 11, which could be represented by 12 states. Since the game will end when we reach $M \geq 11$, the absorbing state would be 11. Then I will construct a transition matrix to show the probability of transitioning from one score to another score, when the Matrix is represented by P. $P^n_{ij}$ is the probability in state j by n steps after being in state i: \\
+$$P = \left(\begin{array}{rrrrrrrrrrrr}
+0 & \frac{1}{6} & \frac{1}{6} & \frac{1}{6} & \frac{1}{6} & \frac{1}{6} & \frac{1}{6} & 0 & 0 & 0 & 0 & 0 \\
+0 & \frac{1}{3} & \frac{1}{3} & \frac{1}{3} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & \frac{1}{6} & \frac{1}{3} & \frac{1}{3} & 0 & 0 & 0 & 0 & \frac{1}{6} & 0 & 0 & 0 \\
+0 & 0 & \frac{1}{3} & \frac{1}{3} & 0 & 0 & 0 & 0 & \frac{1}{6} & \frac{1}{6} & 0 & 0 \\
+0 & 0 & \frac{1}{6} & \frac{1}{3} & 0 & \frac{1}{6} & 0 & 0 & \frac{1}{6} & \frac{1}{6} & 0 & 0 \\
+0 & 0 & 0 & \frac{1}{3} & 0 & \frac{1}{6} & 0 & 0 & \frac{1}{6} & \frac{1}{6} & 0 & \frac{1}{6} \\
+0 & 0 & 0 & \frac{1}{6} & 0 & \frac{1}{6} & 0 & 0 & \frac{1}{6} & \frac{1}{6} & 0 & \frac{1}{3} \\
+0 & 0 & 0 & 0 & 0 & \frac{1}{6} & 0 & 0 & \frac{1}{6} & \frac{1}{6} & 0 & \frac{1}{2} \\
+0 & 0 & 0 & 0 & 0 & \frac{1}{6} & 0 & 0 & 0 & \frac{1}{6} & 0 & \frac{2}{3} \\
+0 & 0 & 0 & 0 & 0 & \frac{1}{6} & 0 & 0 & 0 & 0 & 0 & \frac{5}{6} \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1
+\end{array}\right)$$\\\\
+Here is the code I used to generate the result of P:
+\begin{verbatim}
+def is_prime_or_twice_prime(n):
+    return is_prime(n) or (n % 2 == 0 and is_prime(n // 2))
+
+# Modify the value of M to the desired goal score
+M = 11
+
+# Create the transition matrix for the game
+A = zero_matrix(QQ, M + 1)
+
+# Fill the first row of the matrix with the probabilities of the first roll
+for i in range(6):
+    A[0, i + 1] = 1 / 6
+
+# Set the absorbing state for the goal score
+A[M, M] = 1
+
+# Fill the rest of the matrix based on the game rules
+for i in range(1, M):
+    for j in range(6):
+        roll = j + 1
+        score = i + roll
+
+        # Check if the sum is M or greater
+        #if it's a prime or twice a prime number
+        if score >= M:
+            A[i, M] += 1 / 6
+        elif is_prime_or_twice_prime(score):
+            A[i, score // 2] += 1 / 6
+        else:
+            A[i, score] += 1 / 6
+
+# Print the transition matrix
+latex(A)
+\end{verbatim}
+Next I will find the expected value of turns until the game end, when the matrix P is in the canonical form:\\
+\begin{figure}[h!]
+\centering
+\includegraphics[width=100mm,scale=0.5]{first.png}
+\caption{P in the canonical form}
+\label{fig:chart}
+\end{figure}\\\\
+In the canonical form, J is an identity matrix and O is a matrix of all zeros. Q and R are non-negative matrices that arise from the transition probabilities between non-absorbing states. In my definition to P, Q is the matrix P without the last row and last column, when R is the last column of P without last row. Then I introduce a matrix N here, when N = $(I - Q)^{-1}$, then The sum of the i-th row of N gives the mean number of steps until absorbtion when the chain is started in state i.\\
+By this statement, I am able to calculate the expected number of rolls needed to end the game, which is the sum of the first row of the matrix N:\\
+$$\textit{expected number of rolls} = 7539/4152 \approx 6.63270712909441$$\\
+Here is the code I used to calculate the expected number of roll:
+\begin{verbatim}
+# work out the expected number of rolls until absorption
+#get the matrix Q by removing the last row and last column
+Q = A[:11,:11]
+N=(matrix.identity(11)-Q).inverse()
+sum(N[0][i] for i in range(10)) # get an exact value here
+sum(N[0][i] for i in range(10))*1. #report a decimal equivalent to the exact value
+\end{verbatim}
+
+Then I want to generate a data to check the the distribution of number of rolls until the game ends. At the beginning we provided a concept as $P^n_{ij}$, which is the probability in state j by n steps after being in state i. At this point, $P^n_{1,12}$ is the probability of the game end before the turns reach n times or equal to n time. To generate the probability for game to end at turn n, I introduce $p_i$ here, when $p_i$ represents the probability for the game to end at exactly $i^{th}$ turn. To calculate $p_i$, I can use $p_i = P^i_{1,12} - P^{i-1}_{1,12}$, when I always know the probability of the game end in every turn:\\
+The following is the code I used to generate the plot:
+\begin{verbatim}
+previous = 0  # set the P^(i-1) as zero
+a = []
+current = 0  # set the P^(i) as zero
+
+# Change the loop range to start from 1
+for i in range(1, 50):
+    Pplot = A^i
+    current = Pplot[0, M]  # extract the probability
+    a.append(current - previous)
+    previous = current
+list_plot(a)
+\end{verbatim}\\
+\begin{figure}[h!]
+\centering
+\includegraphics[width=150mm,scale=0.5]{second.png}
+\caption{the distribution of the number of rolls until the game ends when M=11}
+\label{fig:chart}
+\end{figure}
+\begin{text}\\
+From the plot I observe that the probability is almost 0 as the game goes to $40^{th}$ turn, which means most of the game ends before or at turn 40. Besides, I could notice that the cumulative probability for the $5^{th}$ is approximate $0.08+0.20+0.14+0.12 = 0.54$ from the graph, which is around 0.5. If I just go up to 4, the cumulative probability would be $0.08+0.20+0.14 = 0.42$, which is not enough for 0.5.For this reason, I would like to conclude that the median number of the rolls would be 5. I also notice that the maximum probability for the game to end is around 3 turns.\\
+\end{text}\\
+Moreover, I will check the relationship between the expected number of rolls to end the game and the number of M. The code I used here is same as the code in the first part. But I will change the number of M from 7 to 100:\\
+\begin{figure}[h!]
+\centering
+\includegraphics[width=150mm,scale=0.5]{third.png}
+\caption{the relationship between the expected number of rolls to end the game and the number of M from 7 to 100}
+\label{fig:chart}
+\end{figure}\\
+From the graph I could see that, when I generate different M value from 7 to 100, the expected number of rolls keep almost the same as the M start to increase from 7 to 65. At the same time, the expected value started to increase rapidly than before when the goal score reach around 65, thus I conclude that the expected value will increase when the goal score of the game increased.\\
+
+To ensure that, I will try to  generate different M value from 7 to 200 as a larger value:\\
+\begin{figure}[h!]
+\centering
+\includegraphics[width=150mm,scale=0.5]{forth.png}
+\caption{the relationship between the expected number of rolls to end the game and the number of M from 7 to 200}
+\label{fig:chart}
+\end{figure}\\ This time the expected number of rolls keep almost the same as the M start to increase from 7 to 160 on the graph, which might be caused by a greater y-axis range. Similarly, the expected value started to increase rapidly than before when the goal score reach around 160, thus I conclude that the expected value will increase when the goal score of the game increased.\\\\
+However, when I tried to increase the M to 300, Sage did not generate any image out and stuck in running the program, which could be caused by the huge load in running the M in a larger number.\\
+To guess the function of the data, I will calculate the ratio between expected number and the value of M(Figure 5 in the next page).\\
+\begin{figure}[h!]
+\centering
+\includegraphics[width=150mm,scale=0.5]{6.png}
+\caption{the relationship between ratio(expected number : M) and M from 15 to 100}
+\label{fig:chart}
+\end{figure}\\
+From the graph we could see that the ratio is keep increasing and increasing more rapidly as M grows larger, thus it would be an increasing formula, ax+b. Then I plot the relationship between M and log(f(M))(Figure 6 in the next page) \\
+\begin{figure}[h!]
+\centering
+\includegraphics[width=150mm,scale=0.5]{mlogfm.png}
+\caption{the relationship between m and log(f(M)) from 2 to 50}
+\label{fig:chart}
+\end{figure}\\
+founded it is nearly linear, I would like to bounded it with $a*M+b$. Through the graph,I could see the original data intercept the y-axis at approximate (0,1.5). By taking two point approximate as (5,2) and (20,4), I would like to guess that a would be a value around $(4-2)/(20-5) = 0.133$. For this reason, I would make a guess for the lower bound and upper bound:\\
+$$\textit{upper bound} = 0.133 \times M + 2$$
+$$\textit{lower bound} = 0.133 \times M + 1$$
+Then I make a plot to see if the data is bounded by the lines.(Figure 7 in the next page). From the plot we could see that all the points are bounded by the two bounded lines in our guess, thus I would like to conclude that the fitting line for the data would be $a*M + b$ when $a=0.1333$ and $b=1.5$.\\
+\begin{figure}[h!]
+\centering
+\includegraphics[width=150mm,scale=0.5]{bound.png}
+\caption{the relationship between m and log(f(M)) from 2 to 50 with upper and lower bound}
+\label{fig:chart}
+\end{figure}\\
+\end{document}
+
